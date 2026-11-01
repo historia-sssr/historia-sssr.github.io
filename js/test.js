@@ -422,6 +422,7 @@
     }
     const btn = form.querySelector(".submit-btn");
     btn.disabled = true; btn.textContent = "Отправляю…";
+    show("Ответы отправляются. Это может занять до минуты — <b>не закрывайте страницу и не переключайтесь на другие вкладки</b>.", "warn");
     try {
       // text/plain — чтобы браузер не делал предварительный CORS-запрос к Google
       const r = await fetch(cfg.SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) });
