@@ -219,8 +219,10 @@
           `<label class="opt opt-multi"><input type="checkbox" name="${t.id}" value="${v}"><span>${esc(l)}</span></label>`).join("") + `</div>`;
       }
       if (t.type === "slider") {
+        const startTxt = "";
         html += `<div class="slider-row"><button type="button" class="step" data-d="-1" aria-label="Меньше">−</button>` +
-          `<input type="range" name="${t.id}" min="${t.min}" max="${t.max}" step="${t.step}" value="${t.start}">` +
+          `<input type="range" name="${t.id}" min="${t.min}" max="${t.max}" step="${t.step}" value="${t.start}" aria-label="Ответ">` +
+          `<input type="text" class="num-field" inputmode="decimal" autocomplete="off" placeholder="—" value="${startTxt}" aria-label="Введите число">` +
           `<button type="button" class="step" data-d="1" aria-label="Больше">+</button>` +
           `<output class="slider-val" for="${t.id}">—</output><span class="slider-suf">${esc(t.suffix)}</span></div>` +
           `<div class="slider-scale"><span>${String(t.min).replace(".", ",")}</span>` + (t.link ? `<a href="${t.link}" class="back">↑ к данным</a>` : "") + `<span>${String(t.max).replace(".", ",")}</span></div>`;
@@ -258,13 +260,32 @@
       changed();
     }));
     box.querySelectorAll(".task-slider").forEach(el => {
-      const inp = el.querySelector("input[type=range]");
+      const inp = el.querySelector("input[type=range]"), field = el.querySelector(".num-field");
+      const st = +inp.step, dec = String(inp.step).includes(".") ? 1 : 0;
       const mark = () => { state.touched = state.touched || {}; state.touched[el.dataset.id] = 1; showVal(inp); changed(); };
+      const setVal = v => { inp.value = Math.min(+inp.max, Math.max(+inp.min, Math.round(v / st) * st)).toFixed(dec); };
       inp.addEventListener("input", mark);
-      el.querySelectorAll(".step").forEach(b => b.addEventListener("click", () => {
-        const st = +inp.step, v = Math.min(+inp.max, Math.max(+inp.min, +inp.value + st * +b.dataset.d));
-        inp.value = Math.round(v / st) * st; mark();
-      }));
+      // поле с цифровой клавиатурой (основной способ ввода на телефоне)
+      field.addEventListener("input", () => {
+        const n = parseFloat(field.value.replace(",", ".").replace(/\s/g, ""));
+        if (isNaN(n)) return;
+        setVal(n); state.touched = state.touched || {}; state.touched[el.dataset.id] = 1;
+        inp.style.setProperty("--p", ((inp.value - inp.min) / (inp.max - inp.min) * 100) + "%");
+        el.querySelector(".slider-val").textContent = (+inp.value).toFixed(dec).replace(".", ",");
+        changed();
+      });
+      field.addEventListener("blur", () => { if (state.touched && state.touched[el.dataset.id]) showVal(inp); });
+      // кнопки −/+ : нажатие — один шаг, удержание — быстрее
+      el.querySelectorAll(".step").forEach(b => {
+        let timer = null, delay = 0;
+        const stepOnce = () => { setVal(+inp.value + st * +b.dataset.d); mark(); };
+        const stop = () => { clearTimeout(timer); timer = null; };
+        const run = () => { stepOnce(); delay = Math.max(40, delay * 0.8); timer = setTimeout(run, delay); };
+        b.addEventListener("pointerdown", e => { e.preventDefault(); stepOnce(); delay = 380; timer = setTimeout(run, delay); });
+        ["pointerup", "pointerleave", "pointercancel"].forEach(ev => b.addEventListener(ev, stop));
+        b.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); stepOnce(); } });
+        b.addEventListener("contextmenu", e => e.preventDefault());
+      });
     });
     box.querySelectorAll("textarea").forEach(ta => ta.addEventListener("input", () => counter(ta)));
     form.addEventListener("input", changed);
@@ -273,7 +294,11 @@
   function showVal(inp) {
     const t = TASKS.find(x => x.id === inp.name);
     const dec = String(t.step).includes(".") ? 1 : 0;
-    inp.closest(".task").querySelector(".slider-val").textContent = (+inp.value).toFixed(dec).replace(".", ",");
+    const txt = (+inp.value).toFixed(dec).replace(".", ",");
+    const task = inp.closest(".task");
+    task.querySelector(".slider-val").textContent = txt;
+    const f = task.querySelector(".num-field");
+    if (f && document.activeElement !== f) f.value = txt;
     inp.style.setProperty("--p", ((inp.value - t.min) / (t.max - t.min) * 100) + "%");
   }
   function counter(ta) {
@@ -408,7 +433,7 @@
     const a = collect();
     const missing = TASKS.map((t, i) => isDone(t, a) ? null : i + 1).filter(Boolean);
     if (missing.length) {
-      show(`Не выполнены задания: ${missing.join(", ")}. Ползунки нужно передвинуть, а в «Хронологии» — хотя бы раз переставить события; каждый развёрнутый ответ — не короче 300 знаков.`, "warn");
+      show(`Не выполнены задания: ${missing.join(", ")}. В числовых заданиях укажите значение, в «Хронологии» хотя бы раз переставьте события; каждый развёрнутый ответ — не короче 300 знаков.`, "warn");
       return;
     }
     const payload = {

@@ -136,7 +136,11 @@ document.addEventListener("DOMContentLoaded", () => {
   /* Подсветка текущего раздела в навигации */
   const links = [...document.querySelectorAll(".toc a")];
   const obs = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) links.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id));
+    if (e.isIntersecting) links.forEach(a => {
+      const on = a.getAttribute("href") === "#" + e.target.id;
+      a.classList.toggle("on", on);
+      if (on) { const bar = a.parentElement; bar.scrollTo({ left: a.offsetLeft - 16, behavior: "smooth" }); }
+    });
   }), { rootMargin: "-40% 0px -55% 0px" });
   document.querySelectorAll("main section[id]").forEach(s => obs.observe(s));
 });

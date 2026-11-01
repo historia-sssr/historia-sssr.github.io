@@ -364,3 +364,78 @@ body:has(.exit-bar:not([hidden])) footer { padding-bottom: 60px; }
 #tasks .task-match .match-row { grid-template-columns: 1fr 1fr; }
 @media (max-width: 720px) { #tasks .task-match .match-row { grid-template-columns: 1fr; } }
 [data-id=q6] .m-left { font: 900 22px var(--sans); letter-spacing: -.02em; }
+
+/* ================= МОБИЛЬНАЯ АДАПТАЦИЯ (телефоны, iPhone) ================= */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { overflow-x: hidden; }
+button, select, input, textarea, label.opt, .pill { touch-action: manipulation; -webkit-tap-highlight-color: rgba(227, 36, 27, .15); }
+.toc .wrap { scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
+.toc a { scroll-snap-align: start; }
+.exit-bar { padding-bottom: calc(9px + env(safe-area-inset-bottom)); }
+.modal { padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom)); }
+.task select, .match select { font-size: 16px; }          /* iOS не увеличивает страницу при фокусе */
+.chart svg { touch-action: pan-y; }
+
+@media (max-width: 720px) {
+  .wrap { padding: 0 16px; }
+  .table-btn { min-height: 40px; padding: 8px 14px; }
+  .switch { width: 100%; }
+  .switch button { flex: 1 1 auto; min-height: 42px; padding: 8px 10px; }
+  .toc a { padding: 14px 12px; }
+  .step { width: 44px; height: 44px; }
+  .o-btns button { width: 44px; height: 44px; }
+  .opt { padding: 12px 14px; min-height: 48px; }
+  .pill span { padding: 11px 10px; }
+  .act, .submit-btn { width: 100%; min-height: 48px; }
+  .slider-scale { padding: 0; }
+  input[type=range] { height: 36px; }
+  input[type=range]::-webkit-slider-thumb { width: 30px; height: 30px; margin-top: -12px; }
+  input[type=range]::-moz-range-thumb { width: 26px; height: 26px; }
+  .h-a, .h-b { font-size: clamp(54px, 17vw, 96px); }
+  .vs-val { font-size: clamp(38px, 12vw, 52px); white-space: normal; }
+  .pk-n { font-size: 36px; }
+  .u-year { font-size: 44px; }
+  .grade { font-size: 72px; }
+  .famine thead { display: none; }
+  .famine, .famine tbody, .famine tr, .famine th, .famine td { display: block; width: 100%; }
+  .famine tr { padding: 10px 0; border-bottom: 1px solid var(--hair); }
+  .famine th, .famine td { border: 0; padding: 2px 0; }
+  .famine td.num { font-size: 18px; white-space: normal; }
+  .data-table { font-size: 13.5px; }
+  h2 .num { font-size: 60px; }
+  .tl-date { font-size: 14px; }
+  .task legend { gap: 8px; }
+  .t-num { font-size: 30px; }
+  .modal-box { padding: 20px; box-shadow: 6px 6px 0 var(--red); }
+}
+@media (max-width: 360px) {
+  body { font-size: 15.5px; }
+  .h-c { font-size: 20px; }
+  .lead { font-size: 17px; }
+  .collage { height: 140px; }
+  .c2 { font-size: 40px; }
+}
+
+/* числовой ввод: на компьютере — ползунок, на телефоне — поле с цифровой клавиатурой */
+.num-field { display: none; }
+.ticks button { font: 12px var(--mono); color: var(--ink-3); background: none; border: 0; padding: 4px 2px; cursor: pointer; }
+.ticks button[aria-pressed="true"] { color: var(--red); font-weight: 700; }
+@media (max-width: 720px), (pointer: coarse) {
+  .slider-row { gap: 10px; }
+  .slider-row input[type=range] { display: none; }
+  .num-field { display: block; flex: 1 1 auto; min-width: 0; width: 100%; font: 900 28px/1 var(--sans); text-align: center; padding: 10px 8px; border: 2px solid var(--ink); background: var(--card); color: var(--ink); border-radius: 0; -webkit-appearance: none; appearance: none; }
+  .num-field:focus { outline: 3px solid var(--red); outline-offset: 0; }
+  .slider-row .slider-val { display: none; }
+  .slider-row .slider-suf { min-width: 0; flex: none; font-size: 14px; }
+  .slider-row .step { width: 52px; height: 52px; font-size: 26px; flex: none; user-select: none; -webkit-user-select: none; }
+  .slider-scale > span { display: none; }
+  .slider-scale { justify-content: flex-start; padding: 2px 0 0; }
+  .widget .slider-row { margin-bottom: 12px; }
+  #urban-slider input[type=range] { display: none; }
+  .ticks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0 16px; }
+  .ticks button { font: 700 16px var(--sans); color: var(--ink); border: 2px solid var(--ink); min-height: 46px; background: var(--card); }
+  .ticks button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+}
+fieldset.task, fieldset.student { min-width: 0; }
+.o-label, .cls-label, .m-left, .t-text, .opt span { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 360px) { .o-btns button { width: 40px; height: 40px; } .order-list li { gap: 8px; padding-left: 10px; } }

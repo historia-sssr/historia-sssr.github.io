@@ -13,15 +13,27 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="slider-row big">
         <button type="button" class="step" data-d="-1" aria-label="Меньше">−</button>
         <input type="range" min="0" max="15" step="0.1" value="7.5" aria-label="Ваша оценка, млн т">
+        <input type="text" class="num-field" inputmode="decimal" autocomplete="off" value="7,5" aria-label="Ваша оценка, млн т">
         <button type="button" class="step" data-d="1" aria-label="Больше">+</button>
         <output class="slider-val">7,5</output><span class="slider-suf">млн т</span>
       </div>
       <button type="button" class="act">Проверить</button>
       <p class="w-out" aria-live="polite"></p>`;
-    const inp = g.querySelector("input"), out = g.querySelector("output"), res = g.querySelector(".w-out");
-    const upd = () => { out.textContent = f(+inp.value); inp.style.setProperty("--p", (inp.value / 15 * 100) + "%"); };
+    const inp = g.querySelector("input[type=range]"), field = g.querySelector(".num-field"), out = g.querySelector("output"), res = g.querySelector(".w-out");
+    const upd = () => { out.textContent = f(+inp.value); if (document.activeElement !== field) field.value = f(+inp.value); inp.style.setProperty("--p", (inp.value / 15 * 100) + "%"); };
     inp.addEventListener("input", upd);
-    g.querySelectorAll(".step").forEach(b => b.addEventListener("click", () => { inp.value = Math.min(15, Math.max(0, +inp.value + 0.1 * b.dataset.d)).toFixed(1); upd(); }));
+    field.addEventListener("input", () => { const n = parseFloat(field.value.replace(",", ".")); if (!isNaN(n)) { inp.value = Math.min(15, Math.max(0, n)).toFixed(1); upd(); } });
+    field.addEventListener("blur", upd);
+    g.querySelectorAll(".step").forEach(b => {
+      let t = null, d = 0;
+      const once = () => { inp.value = Math.min(15, Math.max(0, +inp.value + 0.1 * b.dataset.d)).toFixed(1); upd(); };
+      const stop = () => { clearTimeout(t); t = null; };
+      const run = () => { once(); d = Math.max(40, d * 0.8); t = setTimeout(run, d); };
+      b.addEventListener("pointerdown", e => { e.preventDefault(); once(); d = 380; t = setTimeout(run, d); });
+      ["pointerup", "pointerleave", "pointercancel"].forEach(ev => b.addEventListener(ev, stop));
+      b.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); once(); } });
+      b.addEventListener("contextmenu", e => e.preventDefault());
+    });
     g.querySelector(".act").addEventListener("click", () => {
       const v = +inp.value, diff = Math.abs(v - fact);
       res.innerHTML = `Факт: <b>${f(fact)} млн т</b>. Ваша оценка: ${f(v)} млн т — ` +
@@ -60,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <span class="w-tag">Ползунок по переписям</span>
       <h3>Как менялась страна: город и деревня</h3>
       <input type="range" min="0" max="${Y.length - 1}" step="1" value="0" class="years" aria-label="Год переписи" list="urban-ticks">
-      <div class="ticks">${Y.map(y => `<span>${y}</span>`).join("")}</div>
+      <div class="ticks" role="group" aria-label="Год переписи">${Y.map((y, i) => `<button type="button" data-i="${i}">${y}</button>`).join("")}</div>
       <div class="u-out">
         <div class="u-year"></div>
         <div class="u-bar"><div class="u-city"></div><div class="u-village"></div></div>
@@ -72,12 +84,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const i = +r.value, y = Y[i], c = V[i];
       r.style.setProperty("--p", (i / (Y.length - 1) * 100) + "%");
       u.querySelector(".u-year").textContent = y;
+      u.querySelectorAll(".ticks button").forEach(b => b.setAttribute("aria-pressed", b.dataset.i == i ? "true" : "false"));
       u.querySelector(".u-city").style.width = c + "%";
       u.querySelector(".u-village").style.width = (100 - c) + "%";
       u.querySelector(".u-c").textContent = `Город — ${c} %`;
       u.querySelector(".u-v").textContent = `Деревня — ${100 - c} %`;
       u.querySelector(".u-lit").textContent = lit[y] ? `Грамотность населения 9–49 лет по этой переписи: ${f(lit[y])} %` : "";
     };
-    r.addEventListener("input", upd); upd();
+    r.addEventListener("input", upd);
+    u.querySelectorAll(".ticks button").forEach(b => b.addEventListener("click", () => { r.value = b.dataset.i; upd(); }));
+    upd();
   }
 });

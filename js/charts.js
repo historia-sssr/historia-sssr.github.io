@@ -41,6 +41,13 @@
     return 10 * p;
   }
 
+  // на телефоне подсказка исчезает при прокрутке или касании вне графика
+  if (!window.__tipGuard) {
+    window.__tipGuard = true;
+    const hideAll = () => document.querySelectorAll(".tip").forEach(t => t.style.opacity = 0);
+    window.addEventListener("scroll", hideAll, { passive: true });
+    document.addEventListener("pointerdown", e => { if (!e.target.closest(".chart")) hideAll(); });
+  }
   function tooltip(wrap) {
     let t = wrap.querySelector(".tip");
     if (!t) { t = document.createElement("div"); t.className = "tip"; wrap.appendChild(t); }
@@ -48,8 +55,9 @@
       show(html, x, y) {
         t.innerHTML = html; t.style.opacity = 1;
         const r = wrap.getBoundingClientRect();
-        let left = x - r.left + 12, top = y - r.top - 12;
-        if (left + 220 > r.width) left = x - r.left - 220;
+        let left = x - r.left + 12, top = y - r.top - 56;
+        const tw = Math.min(220, r.width - 8);
+        if (left + tw > r.width) left = Math.max(0, r.width - tw);
         t.style.left = left + "px"; t.style.top = top + "px";
       },
       hide() { t.style.opacity = 0; }
@@ -148,8 +156,10 @@
           t.textContent = fmt(v);
         }
         const hit = el("rect", { x: x - gap, y: M.t, width: bw + gap * 2, height: plotH, class: "hit" }, svg);
-        hit.addEventListener("mousemove", e => tip.show(`<b>${c}</b><br>${s.name ? s.name + ": " : ""}${fmt(v)} ${o.unit}`, e.clientX, e.clientY));
-        hit.addEventListener("mouseleave", tip.hide);
+        const showTip = e => tip.show(`<b>${c}</b><br>${s.name ? s.name + ": " : ""}${fmt(v)} ${o.unit}`, e.clientX, e.clientY);
+        hit.addEventListener("pointermove", showTip);
+        hit.addEventListener("pointerdown", showTip);
+        hit.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") tip.hide(); });
       });
       const cx = M.l + band * i + band / 2;
       if (rotate) {
@@ -197,15 +207,17 @@
       }
     });
     const hit = el("rect", { x: M.l, y: M.t, width: plotW, height: plotH, class: "hit" }, svg);
-    hit.addEventListener("mousemove", e => {
+    const lineTip = e => {
       const r = svg.getBoundingClientRect();
       const sx = (e.clientX - r.left) * W / r.width;
       let best = 0;
       pts.forEach((p, i) => { if (Math.abs(p[0] - sx) < Math.abs(pts[best][0] - sx)) best = i; });
       cross.setAttribute("x1", pts[best][0]); cross.setAttribute("x2", pts[best][0]); cross.setAttribute("opacity", 1);
       tip.show(`<b>${o.years[best]}</b><br>${fmt(o.values[best])} ${o.unit}`, e.clientX, e.clientY);
-    });
-    hit.addEventListener("mouseleave", () => { tip.hide(); cross.setAttribute("opacity", 0); });
+    };
+    hit.addEventListener("pointermove", lineTip);
+    hit.addEventListener("pointerdown", lineTip);
+    hit.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") { tip.hide(); cross.setAttribute("opacity", 0); } });
     tableToggle(wrap, ["Год", o.unit], o.years.map((y, i) => [y, o.values[i]]));
   };
 })();
