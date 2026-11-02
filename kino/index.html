@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#111111">
+<title>Кино и общество: сталинское кино и кино застоя</title>
+<meta name="description" content="Учебный раздел для студентов: два видео о советском кино и тесты по ним.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=PT+Mono&family=Rubik+Mono+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kino.css">
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">Учебный ресурс · История СССР · Кино</p>
+    <h1><span>Кино</span><span class="amp">и</span><span class="red">общество</span></h1>
+    <p class="lead">Два видео о том, как советское кино отражало своё время: от сталинских музыкальных комедий до «застойных» фильмов, которые мы пересматриваем до сих пор. Посмотрите видео, затем пройдите тест.</p>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Разделы">
+  <div class="wrap">
+    <a href="#video1">Видео 1</a>
+    <a href="#video2">Видео 2</a>
+    <a href="#tests">Тесты</a>
+    <a href="../" class="home">← Главная</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="video1">
+  <h2><span class="num">1</span>Как Сталин изменил советское кино</h2>
+  <p class="note">Видео разделено на две части. Нажмите на время в списке глав, чтобы перейти к нужному месту.</p>
+
+  <div class="player" data-video="stalin" data-part="1">
+    <p class="ptitle">Часть 1 <span>0:00–20:07 · главы I–II</span></p>
+    <video id="v-stalin-1" controls playsinline preload="metadata" poster="video/stalin-1.jpg">
+      <source src="video/stalin-1.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="player" data-video="stalin" data-part="2">
+    <p class="ptitle">Часть 2 <span>20:07–39:31 · главы III–IV</span></p>
+    <video id="v-stalin-2" controls playsinline preload="metadata" poster="video/stalin-2.jpg">
+      <source src="video/stalin-2.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <h3 class="sub">Главы</h3>
+  <ol class="chapters" data-video="stalin">
+    <li><button data-t="0">0:00</button><span>Вступление</span></li>
+    <li><button data-t="100">1:40</button><span><b>I. Жанровая система соцреализма (1934–1941)</b> · музыкальная комедия</span></li>
+    <li><button data-t="300">5:00</button><span>Производственная драма</span></li>
+    <li><button data-t="440">7:20</button><span>Историческое кино</span></li>
+    <li><button data-t="650">10:50</button><span>Оборонное кино, шпионские триллеры, киносказки</span></li>
+    <li><button data-t="768">12:48</button><span><b>II. Визуальный стиль</b></span></li>
+    <li><button data-t="900">15:00</button><span>Песни и их авторы</span></li>
+    <li><button data-t="1000">16:40</button><span>«Александр Невский» и вертикальный монтаж</span></li>
+    <li><button data-t="1207">20:07</button><span><b>III. Кино военного времени (1941–1946)</b></span></li>
+    <li><button data-t="1610">26:50</button><span>«Иван Грозный»</span></li>
+    <li><button data-t="1800">30:00</button><span><b>IV. Малокартинье</b></span></li>
+    <li><button data-t="2160">36:00</button><span>Наследие сталинского кино</span></li>
+  </ol>
+</section>
+
+<section id="video2">
+  <h2><span class="num">2</span>О чём на самом деле любимые советские фильмы</h2>
+  <p class="note">Кино эпохи застоя: конец 1960-х — середина 1980-х гг.</p>
+  <div class="player" data-video="zastoy" data-part="1">
+    <video id="v-zastoy-1" controls playsinline preload="metadata" poster="video/zastoy.jpg">
+      <source src="video/zastoy.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <h3 class="sub">Главы</h3>
+  <ol class="chapters" data-video="zastoy">
+    <li><button data-t="0">0:00</button><span>Вступление</span></li>
+    <li><button data-t="100">1:40</button><span><b>I. Главные кинообразы эпохи</b></span></li>
+    <li><button data-t="630">10:30</button><span><b>II. Великая война</b></span></li>
+    <li><button data-t="1080">18:00</button><span><b>III. Другие берега</b></span></li>
+    <li><button data-t="1385">23:05</button><span><b>IV. Расцвет телевидения</b></span></li>
+    <li><button data-t="1465">24:25</button><span><b>V.</b> Облик эпохи на экране: цвет, город, интерьеры</span></li>
+    <li><button data-t="1658">27:38</button><span><b>VI. Мир детства</b></span></li>
+  </ol>
+</section>
+
+<section id="tests">
+  <h2><span class="num">3</span>Тесты</h2>
+
+  <div class="rules">
+    <span class="tag">Правила</span>
+    <ul>
+      <li>Тест открывается после ввода ФИО и группы.</li>
+      <li>В каждом тесте 20 вопросов: с выбором ответа (оценка от 2 до 5 ставится автоматически) и открытые (их проверяет преподаватель).</li>
+      <li>У каждого вопроса указан фрагмент видео, где искать ответ. Кнопка ▶ откроет видео на этом месте — это не считается уходом.</li>
+      <li><b>Считается каждый уход со страницы</b>: переключение вкладки или приложения, сворачивание браузера. Число уходов увидит преподаватель.</li>
+      <li>Ответы сохраняются в браузере: при случайной перезагрузке они не пропадут. Отправить тест можно один раз.</li>
+    </ul>
+  </div>
+
+  <form id="reg" class="card reg" autocomplete="on" novalidate>
+    <h3>Кто проходит тест</h3>
+    <label>Фамилия, имя, отчество
+      <input id="fio" name="name" type="text" autocomplete="name" placeholder="Иванов Иван Иванович" required>
+    </label>
+    <label>Группа
+      <input id="group" name="group" type="text" autocomplete="off" placeholder="Например, ИСТ-21" required>
+    </label>
+    <p class="err" id="reg-err" hidden></p>
+    <button type="submit" class="btn">Сохранить</button>
+    <p class="who" id="who" hidden></p>
+  </form>
+
+  <div class="testpick" id="testpick">
+    <button class="pick" data-test="stalin" disabled><b>Тест 1</b><span>Как Сталин изменил советское кино</span><i class="st" data-st="stalin"></i></button>
+    <button class="pick" data-test="zastoy" disabled><b>Тест 2</b><span>О чём на самом деле любимые советские фильмы</span><i class="st" data-st="zastoy"></i></button>
+  </div>
+
+  <div id="test-stalin" class="test" hidden></div>
+  <div id="test-zastoy" class="test" hidden></div>
+</section>
+
+</main>
+
+<div class="bar" id="bar" hidden>
+  <span id="bar-test"></span>
+  <span>Отвечено: <b id="bar-done">0</b>/20</span>
+  <span class="exits">Уходов: <b id="bar-exits">0</b></span>
+</div>
+
+<footer class="foot"><div class="wrap">Учебный раздел для студентов. Видео из открытого доступа используются в учебных целях.</div></footer>
+
+<script src="js/config.js"></script>
+<script src="js/questions.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
